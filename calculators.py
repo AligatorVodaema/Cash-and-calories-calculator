@@ -10,6 +10,7 @@ class CaloriesCalculator(Calculator):
         Calculator ([int]): [calories limit for every day.]
     """
     def get_calories_remained(self) -> str:
+        """Generates a response depending on the state of the daily limit."""
         calories_remained, limit_status = self.get_today_amount_remained()
         if limit_status in ('reached', 'exceeded'):
             return "Хватит есть!"
@@ -58,7 +59,7 @@ class CashCalculator(Calculator):
         else:
             result_message = "На сегодня осталось {} {}."
             
-        cash_remained, currency_name = self.convert_currency(
+        cash_remained, currency_name = self._convert_currency(
             currency=currency, 
             cash=abs(cash_remained)
         )
@@ -66,7 +67,7 @@ class CashCalculator(Calculator):
 
           
     @classmethod
-    def convert_currency(cls, currency: str, cash: int) -> Tuple[float, str]:
+    def _convert_currency(cls, currency: str, cash: int) -> Tuple[float, str]:
         """Converts money into the desired currency.
 
         Args:
