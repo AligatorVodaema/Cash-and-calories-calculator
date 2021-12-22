@@ -1,4 +1,5 @@
-from typing import Tuple
+from typing import Tuple, Union
+from enum import Enum
 
 from base_calculator import Calculator, Record
 
@@ -38,7 +39,13 @@ class CashCalculator(Calculator):
     """
     USD_RATE = 73
     EUR_RATE = 83
-    DEFAULT_CURRENCY_SHORT_NAME = 'руб'
+    RUB_RATE = 1
+    curreency_rates = {
+            'usd': (USD_RATE, 'USD'),
+            'eur': (EUR_RATE, 'Euro'),
+            'rub': (RUB_RATE, 'руб')
+    }
+    DEFAULT_CURRENCY = curreency_rates['rub']
     
     def get_today_cash_remained(self, currency: str) -> str:
         """Generates a response depending on the state of the limit.
@@ -50,6 +57,12 @@ class CashCalculator(Calculator):
             [str]: [information about the status of the limit 
             and the ability to spend.]
         """
+        if currency not in self.curreency_rates.keys():
+            return (
+                "Введите одну из доступных валют: " +
+                "/".join(self.curreency_rates.keys())
+            )
+            
         cash_remained, limit_status = self.get_today_amount_remained()
         
         if limit_status == 'reached':
@@ -79,23 +92,24 @@ class CashCalculator(Calculator):
                 [float]: [converted representation to the desired currency.]
                 [str]: [currency name for representation.]
         """
-        currency_name = cls.DEFAULT_CURRENCY_SHORT_NAME
+        currency_rate, currency_name = cls.curreency_rates[currency]
+        cash = cls._convert_single_currency(cash, currency_rate)
         
-        if currency == 'usd':
-            cash = round(cash / cls.USD_RATE, 2)
-            currency_name = 'USD'
-            
-        elif currency == 'eur':
-            cash = round(cash / cls.EUR_RATE, 2)
-            currency_name = 'Euro'
         return (cash, currency_name)
+    
+    @staticmethod
+    def _convert_single_currency(
+        cash: Union[int, float],
+        rate: Union[int, float]
+    ) -> float:
+        return round(cash / rate, 2)
 
     def get_week_stats(self) -> str:
         """Return spended money for the last week."""
         spended_money = super().get_week_stats()
         return (
             f"За последнюю неделю потрачено {spended_money} "
-            f"{self.DEFAULT_CURRENCY_SHORT_NAME}."
+            f"{self.DEFAULT_CURRENCY[-1]}."
         )
         
     def get_today_stats(self) -> str:
@@ -103,7 +117,7 @@ class CashCalculator(Calculator):
         spended_money = super().get_today_stats()
         return (
             f"Сегодня потрачено {spended_money} "
-            f"{self.DEFAULT_CURRENCY_SHORT_NAME}"
+            f"{self.DEFAULT_CURRENCY[-1]}"
         )
         
         
@@ -114,7 +128,7 @@ if __name__ == '__main__':
     cash_calc = CashCalculator(1000)
     cash_calc.add_record(rec1)
     cash_calc.add_record(rec2)
-    print(cash_calc.get_today_cash_remained('rub'))
+    print(cash_calc.get_today_cash_remained('QQQ'))
     print(cash_calc.get_today_cash_remained('eur'))
     print(cash_calc.get_today_cash_remained('usd'))
     print(cash_calc.get_week_stats(), end='\n\n')
