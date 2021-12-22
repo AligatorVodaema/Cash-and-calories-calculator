@@ -6,6 +6,7 @@ authors = ["AligatorVodaema <ignatev.vsevolod@mail.ru>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+isort = "^5.10.1"
 
 [tool.poetry.dev-dependencies]
 
