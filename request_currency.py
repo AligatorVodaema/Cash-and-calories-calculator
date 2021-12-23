@@ -42,6 +42,8 @@ def check_last_update_currency() -> None:
     
     Or send request for new dump if dump not found.
     """
+    if not os.path.isdir(CURRENT_DIR + '/currency_data'):
+        os.mkdir(CURRENT_DIR + '/currency_data')
     # looking for dump.
     try:
         dump_json_file_name = find_single_json_dump()

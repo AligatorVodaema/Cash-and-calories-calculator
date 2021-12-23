@@ -146,3 +146,4 @@ cython_debug/
 
 source_code.py
 del_me.py
+currency_data/
