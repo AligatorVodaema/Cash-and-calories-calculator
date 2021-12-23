@@ -33,7 +33,6 @@ class CaloriesCalculator(Calculator):
 class CashCalculator(Calculator):
     """Calculator for tracking spending money.
     
-    Default currency is Rubles.
     Args:
         Calculator ([int]): [money limit for every day.]
     """

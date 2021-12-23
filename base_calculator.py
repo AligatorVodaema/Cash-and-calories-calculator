@@ -2,7 +2,11 @@ import datetime as dt
 from dataclasses import dataclass
 from typing import Tuple
 
+from loguru import logger
+
+
 DATE_FORMAT = '%d.%m.%Y'
+logger.add('records.log', level='SUCCESS', compression="zip")
 
 
 class Calculator:
@@ -80,6 +84,7 @@ class Record:
         """
         if not isinstance(self.date, dt.datetime):
             self.date = dt.datetime.strptime(self.date, DATE_FORMAT)
+        logger.success(f'{self.amount=}, {self.comment=}, {self.date=}')
         return None
             
 

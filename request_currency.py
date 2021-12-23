@@ -1,13 +1,18 @@
 import json
 import os
+import sys
 import datetime as dt
 import glob
 from typing import Dict
 
 import requests
+from loguru import logger
 
 CURRENT_DIR = os.path.dirname(__file__)
 CURRENCY_RATE_URL = 'https://www.cbr-xml-daily.ru/daily_json.js'
+
+logger.add(sys.stdout, level='INFO')
+logger.add('ERRORS.log', level='ERROR')
 
 
 def remove_all_json_dumps() -> None:
@@ -27,7 +32,7 @@ def find_single_json_dump() -> str:
 
 def request_current_currencies() -> None:
     """Request data on exchange rates and save them in json."""
-    print('Request sent!')
+    logger.info(f'Request sent to {CURRENCY_RATE_URL}')
     response = requests.get(CURRENCY_RATE_URL)
     current_dt = dt.datetime.now()
     with open(
@@ -79,7 +84,8 @@ def load_rates_from_dump() -> Dict:
         currency_dict = json.load(fp=f)
     return currency_dict
 
-    
+
+@logger.catch(level="ERROR")
 def get_current_exchange_rates() -> Dict:
     """Return a fresh exchange rate."""
     check_last_update_currency()
