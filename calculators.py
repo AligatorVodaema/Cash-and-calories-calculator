@@ -1,7 +1,7 @@
 from typing import Tuple, Union
-from enum import Enum
 
 from base_calculator import Calculator, Record
+from request_currency import get_current_exchange_rates
 
 
 class CaloriesCalculator(Calculator):
@@ -37,15 +37,13 @@ class CashCalculator(Calculator):
     Args:
         Calculator ([int]): [money limit for every day.]
     """
-    USD_RATE = 73
-    EUR_RATE = 83
-    RUB_RATE = 1
-    curreency_rates = {
-            'usd': (USD_RATE, 'USD'),
-            'eur': (EUR_RATE, 'Euro'),
-            'rub': (RUB_RATE, 'руб')
+    DEFAUL_CURRENCY = 'RUB'
+    currency_representation = {
+            'USD': 'USD',
+            'EUR': 'Euro',
+            'RUB': 'руб'
     }
-    DEFAULT_CURRENCY = curreency_rates['rub']
+    DEFAULT_CURRENCY_REPR = currency_representation['RUB']
     
     def get_today_cash_remained(self, currency: str) -> str:
         """Generates a response depending on the state of the limit.
@@ -57,10 +55,15 @@ class CashCalculator(Calculator):
             [str]: [information about the status of the limit 
             and the ability to spend.]
         """
-        if currency not in self.curreency_rates.keys():
+        currency_rates = get_current_exchange_rates()
+        lower_currency_names = [
+            str.lower(cur_name) for cur_name 
+            in currency_rates['Valute'].keys()
+        ]
+        if currency not in lower_currency_names:
             return (
                 "Введите одну из доступных валют: " +
-                "/".join(self.curreency_rates.keys())
+                "/".join(lower_currency_names)
             )
             
         cash_remained, limit_status = self.get_today_amount_remained()
@@ -92,8 +95,18 @@ class CashCalculator(Calculator):
                 [float]: [converted representation to the desired currency.]
                 [str]: [currency name for representation.]
         """
-        currency_rate, currency_name = cls.curreency_rates[currency]
+        curr_rates = get_current_exchange_rates()
+        if currency == cls.DEFAUL_CURRENCY.lower():
+            currency_rate = 1
+        else:
+            currency_rate = curr_rates['Valute'][currency.upper()]['Value']
+        
         cash = cls._convert_single_currency(cash, currency_rate)
+        
+        try:
+            currency_name = cls.currency_representation[currency.upper()]
+        except KeyError:
+            currency_name = currency.upper()
         
         return (cash, currency_name)
     
@@ -109,7 +122,7 @@ class CashCalculator(Calculator):
         spended_money = super().get_week_stats()
         return (
             f"За последнюю неделю потрачено {spended_money} "
-            f"{self.DEFAULT_CURRENCY[-1]}."
+            f"{self.DEFAULT_CURRENCY_REPR}."
         )
         
     def get_today_stats(self) -> str:
@@ -117,7 +130,7 @@ class CashCalculator(Calculator):
         spended_money = super().get_today_stats()
         return (
             f"Сегодня потрачено {spended_money} "
-            f"{self.DEFAULT_CURRENCY[-1]}"
+            f"{self.DEFAULT_CURRENCY_REPR}"
         )
         
         
@@ -130,7 +143,7 @@ if __name__ == '__main__':
     cash_calc.add_record(rec2)
     print(cash_calc.get_today_cash_remained('QQQ'))
     print(cash_calc.get_today_cash_remained('eur'))
-    print(cash_calc.get_today_cash_remained('usd'))
+    print(cash_calc.get_today_cash_remained('amd'))
     print(cash_calc.get_week_stats(), end='\n\n')
     
     rec3 = Record(1000, 'съел еду')
