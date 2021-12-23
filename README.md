@@ -39,7 +39,7 @@ Date format <code>DD.MM.YYYY</code>.
 
 Where "currency" is: 
 
-In what currency do you want to see the result(<code>'rub'</code> or <code>'usd'</code> or <code>'eur'</code>)
+In what currency do you want to see the result(<code>'rub'</code> or <code>'usd'</code> or <code>'eur'</code> or another...)
 
 #### Return spended money for the last week.
 <code>cash_c.get_week_stats()</code>:
