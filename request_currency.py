@@ -9,7 +9,7 @@ import requests
 from loguru import logger
 
 CURRENT_DIR = os.path.dirname(__file__)
-CURRENCY_RATE_URL = 'https://www.cbr-xml-daily.ru/daily_json.js'
+CURRENCY_RATE_URL = ('https://www.cbr-xml-daily.ru/daily_json.js', 'RUB')
 
 logger.add(sys.stdout, level='INFO')
 logger.add('ERRORS.log', level='ERROR')
@@ -32,8 +32,8 @@ def find_single_json_dump() -> str:
 
 def request_current_currencies() -> None:
     """Request data on exchange rates and save them in json."""
-    logger.info(f'Request sent to {CURRENCY_RATE_URL}')
-    response = requests.get(CURRENCY_RATE_URL)
+    logger.info(f'Request sent to {CURRENCY_RATE_URL[0]}')
+    response = requests.get(CURRENCY_RATE_URL[0])
     current_dt = dt.datetime.now()
     with open(
         CURRENT_DIR + f'/currency_data/{current_dt}.json', mode='w'
