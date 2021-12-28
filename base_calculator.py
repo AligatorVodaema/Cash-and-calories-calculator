@@ -4,9 +4,15 @@ from typing import Tuple
 
 from loguru import logger
 
+from request_currency import CURRENT_DIR
+
 
 DATE_FORMAT = '%d.%m.%Y'
-logger.add('records.log', level='SUCCESS', compression="zip")
+logger.add(
+    CURRENT_DIR + '/logs/records_{time}.log',
+    level='SUCCESS',
+    rotation='24h'
+)
 
 
 class Calculator:

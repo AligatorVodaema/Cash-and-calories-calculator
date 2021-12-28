@@ -12,7 +12,7 @@ CURRENT_DIR = os.path.dirname(__file__)
 CURRENCY_RATE_URL = ('https://www.cbr-xml-daily.ru/daily_json.js', 'RUB')
 
 logger.add(sys.stdout, level='INFO')
-logger.add('ERRORS.log', level='ERROR')
+logger.add(CURRENT_DIR +'/logs/ERRORS_{time}.log', level='ERROR')
 
 
 def remove_all_json_dumps() -> None:
