@@ -1,8 +1,7 @@
-import json
-import os
-import sys
 import datetime as dt
 import glob
+import json
+import os
 from typing import Dict
 
 import requests
@@ -10,9 +9,6 @@ from loguru import logger
 
 CURRENT_DIR = os.path.dirname(__file__)
 CURRENCY_RATE_URL = ('https://www.cbr-xml-daily.ru/daily_json.js', 'RUB')
-
-logger.add(sys.stdout, level='INFO')
-logger.add(CURRENT_DIR +'/logs/ERRORS_{time}.log', level='ERROR')
 
 
 def remove_all_json_dumps() -> None:

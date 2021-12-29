@@ -1,7 +1,20 @@
+import sys
 from typing import Tuple, Union
 
+from loguru import logger
+
 from base_calculator import Calculator, Record
-from request_currency import CURRENCY_RATE_URL, get_current_exchange_rates
+from request_currency import (CURRENCY_RATE_URL, CURRENT_DIR,
+                              get_current_exchange_rates)
+
+logger.remove()
+logger.add(
+    CURRENT_DIR + '/logs/records.log',
+    level='SUCCESS',
+    rotation='24h'
+)
+logger.add(sys.stdout, level='INFO')
+logger.add(CURRENT_DIR +'/logs/ERRORS.log', level='ERROR')
 
 
 class IncorrectInput(Exception):
@@ -141,7 +154,6 @@ if __name__ == '__main__':
     cash_calc = CashCalculator(1000)
     cash_calc.add_record(rec1)
     cash_calc.add_record(rec2)
-    print(cash_calc.get_today_cash_remained('QQQ'))
     print(cash_calc.get_today_cash_remained('eur'))
     print(cash_calc.get_today_cash_remained('amd'))
     print(cash_calc.get_week_stats(), end='\n\n')
